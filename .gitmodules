@@ -1,0 +1,3 @@
+[submodule "theme/bootstrap"]
+	path = theme/bootstrap
+	url = https://github.com/bmbrands/theme_bootstrap.git
