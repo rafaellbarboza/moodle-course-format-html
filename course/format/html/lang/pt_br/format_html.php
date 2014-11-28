@@ -20,25 +20,12 @@
  * @package    course/format
  * @subpackage html
  * @copyright  &copy; 2012 G J Barnard in respect to modifications of standard topics format.
- * @author     G J Barnard - gjbarnard at gmail dot com, {@link http://about.me/gjbarnard} and
- *                           {@link http://moodle.org/user/profile.php?id=442195}
+ * @author     G J Barnard - gjbarnard at gmail dot com, about.me/gjbarnard and {@link http://moodle.org/user/profile.php?id=442195}
  * @author     Based on code originally written by Paul Krix and Julian Ridden.
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-defined('MOODLE_INTERNAL') || die();
-
-// Plugin version.
-$plugin->version = 2014081900;
-
-// Required Moodle version.
-$plugin->requires = 2014051200.00; // 2.7 (Build: 20140512).
-
-// Full name of the plugin.
-$plugin->component = 'format_html';
-
-// Software maturity level.
-$plugin->maturity = MATURITY_STABLE;
-
-// User-friendly version number.
-$plugin->release = '2.7.1.3';
+$string['pluginname'] = 'HTML';
+$string['numbersections'] = 'Número de Sessões';
+$string['showfromothers'] = '';
+ $string['hidefromothers'] = ''; 

@@ -15,19 +15,42 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * HMTL Format - A html based format that uses a block of html edition in home course.
+ * Grid Format - A topics based format that uses a grid of user selectable images to popup a light box of the section.
  *
  * @package    course/format
- * @subpackage html
- * @copyright  2014 Rafael Milani Barbosa
- * @author     Rafael Milani Barbosa [rafaelmilanib@gmail.com]
+ * @subpackage grid
+ * @copyright  &copy; 2012 G J Barnard in respect to modifications of standard topics format.
+ * @author     G J Barnard - gjbarnard at gmail dot com and {@link http://moodle.org/user/profile.php?id=442195}
+ * @author     Based on code originally written by Paul Krix and Julian Ridden.
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 defined('MOODLE_INTERNAL') || die();
 require_once($CFG->libdir . '/filelib.php');
 require_once($CFG->libdir . '/completionlib.php');
 
+// Horrible backwards compatible parameter aliasing..
+if ($topic = optional_param('topic', 0, PARAM_INT)) { // Topics and Grid old section parameter.
+    $url = $PAGE->url;
+    $url->param('section', $topic);
+    debugging('Outdated topic / grid param passed to course/view.php', DEBUG_DEVELOPER);
+    redirect($url);
+}
+if ($ctopic = optional_param('ctopics', 0, PARAM_INT)) { // Collapsed Topics old section parameter.
+    $url = $PAGE->url;
+    $url->param('section', $ctopic);
+    debugging('Outdated collapsed topic param passed to course/view.php', DEBUG_DEVELOPER);
+    redirect($url);
+}
+if ($week = optional_param('week', 0, PARAM_INT)) { // Weeks old section parameter.
+    $url = $PAGE->url;
+    $url->param('section', $week);
+    debugging('Outdated week param passed to course/view.php', DEBUG_DEVELOPER);
+    redirect($url);
+}
+// End backwards-compatible aliasing..
+
 $context = context_course::instance($course->id);
+
 if (($marker >= 0) && has_capability('moodle/course:setcurrentsection', $context) && confirm_sesskey()) {
     $course->marker = $marker;
     course_set_marker($course->id, $marker);
@@ -38,8 +61,10 @@ $courseformat = course_get_format($course);
 $course = $courseformat->get_course();
 course_create_sections_if_missing($course, range(0, $course->numsections));
 
-$renderer = $PAGE->get_renderer('format_grid_across');
+$renderer = $PAGE->get_renderer('format_html');
+?>
 
+<?php
 if (!empty($displaysection)) {
     $renderer->print_single_section_page($course, null, null, null, null, $displaysection);
 } else {
@@ -47,4 +72,4 @@ if (!empty($displaysection)) {
 }
 
 // Include course format js module.
-$PAGE->requires->js('/course/format/grid_across/format.js');
+$PAGE->requires->js('/course/format/html/format.js');

@@ -15,30 +15,27 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * HTML Format - A topics based format that uses a grid of user selectable images to popup a light box of the section.
+ * Grid Format - A topics based format that uses a grid of user selectable images to popup a light box of the section.
  *
  * @package    course/format
- * @subpackage html
+ * @subpackage grid
  * @copyright  &copy; 2012 G J Barnard in respect to modifications of standard topics format.
- * @author     G J Barnard - gjbarnard at gmail dot com, {@link http://about.me/gjbarnard} and
- *                           {@link http://moodle.org/user/profile.php?id=442195}
+ * @author     G J Barnard - gjbarnard at gmail dot com and {@link http://moodle.org/user/profile.php?id=442195}
  * @author     Based on code originally written by Paul Krix and Julian Ridden.
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+require_once('../../../config.php');
+require_once($CFG->dirroot . '/course/lib.php');
+require_once($CFG->dirroot . '/course/format/html/lib.php');
+require_login();
 
-defined('MOODLE_INTERNAL') || die();
+$course = optional_param('course', '', PARAM_INT);
+$showsummary = optional_param('showsummary', 0, PARAM_INT);
 
-// Plugin version.
-$plugin->version = 2014081900;
+// Ensure format_grid_summary field status exists.
+$courseformat = course_get_format($course);
+$summarystatus = $courseformat->get_summary_visibility($course);
+$DB->set_field('format_grid_summary', 'showsummary', $showsummary,
+    array('courseid' => $course, 'id' => $summarystatus->id));
 
-// Required Moodle version.
-$plugin->requires = 2014051200.00; // 2.7 (Build: 20140512).
-
-// Full name of the plugin.
-$plugin->component = 'format_html';
-
-// Software maturity level.
-$plugin->maturity = MATURITY_STABLE;
-
-// User-friendly version number.
-$plugin->release = '2.7.1.3';
+redirect($CFG->wwwroot . "/course/view.php?id=" . $course);

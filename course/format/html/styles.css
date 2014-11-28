@@ -1,0 +1,449 @@
+/* This file is part of Moodle - http://moodle.org/
+
+   Moodle is free software: you can redistribute it and/or modify
+   it under the terms of the GNU General Public License as published by
+   the Free Software Foundation, either version 3 of the License, or
+   (at your option) any later version.
+
+   Moodle is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   GNU General Public License for more details.
+
+   You should have received a copy of the GNU General Public License
+   along with Moodle.  If not, see <http://www.gnu.org/licenses/>. */
+
+/**
+ * Grid Format - A topics based format that uses a grid of user selectable images to popup a light box of the section.
+ *
+ * @package    course/format
+ * @subpackage grid_across
+ * @copyright  &copy; 2012 onwards G J Barnard in respect to modifications of standard topics format.
+ * @author     G J Barnard - gjbarnard at gmail dot com and {@link http://moodle.org/user/profile.php?id=442195}
+ * @author     Based on code originally written by Paul Krix and Julian Ridden.
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+
+.course-content a {
+    outline: none;
+}
+.course-content .grid_title {
+    font-size: 160%;
+    font-weight: bold;
+}
+.course-content ul.gtopics h3.sectionname {
+    background: transparent;
+    font-weight: normal;
+    border: 0px none;
+    border-bottom: dashed 1px #000;
+    padding: 0px;
+    padding-bottom: 5px;
+}
+.course-content ul.gtopics-0 #section-0 {
+    background: transparent;
+    border: 0px none;
+}
+
+.course-content ul.gtopics-0 #section-0 .side {
+    width: 28px;
+}
+
+/* Change of logic such that topics are hidden by default and then shown to prevent 'flash' whilst JavaScript kicks in. */
+body.jsenabled li.grid_section.hide_section {
+    display: none !important; /* Important to override bootstrap/moodle/undo.less. */
+}
+
+div#gridmiddle-column > ul {
+    list-style-type: none;
+}
+
+.course-content ul.gtopics {
+    margin:0;
+}
+
+.course-content ul.gtopics li.section {
+    list-style: none;
+    margin:5px 0 0 0;
+    padding:0;
+}
+
+.course-content ul.gtopics li.section .content {
+    margin:0 40px;
+}
+
+.course-content ul.gtopics li.section .side {
+    width:40px;
+    text-align:center;
+}
+
+.course-content ul.gtopics li.section .left {
+    float:left;
+    padding: 0px;
+}
+
+.course-content ul.gtopics li.section .right {
+    float:right;
+}
+
+/* @group Topic Icons */
+#gridiconcontainer {
+    width: 100%;
+    margin: 0 auto;
+    padding: 0px;
+    text-align: center;
+    height: auto;
+}
+#gridiconcontainer ul.gridicons {
+    width: 100%;
+    margin: 0 auto;
+    padding: 0;
+}
+#gridiconcontainer ul.gridicons li {
+    padding: 10px;
+    text-align: left;
+    border: 1px solid #FFF;
+    padding: 10px;
+    list-style-type: none;
+}
+#gridiconcontainer ul.gridicons li a.rlink {
+    display: block;
+    min-height: 156px;
+}
+.dir-rtl #gridiconcontainer ul.gridicons li {
+   text-align: right;
+}
+
+.course-content ul.gridicons li.currentselected {
+    filter:alpha(opacity=80); /* IE */
+    -moz-opacity:0.8; /* Mozilla */
+    opacity: 0.8; /* CSS3 */
+}
+
+.course-content ul.gridicons img.new_activity {
+    position: absolute;
+}
+
+.course-content .gridicon_link {
+    cursor: pointer;
+}
+.course-content ul.gridicons li p.icon_content {
+    font-weight: bold;
+    margin: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    height: 20px;
+    text-align: center;
+}
+.course-content ul.gridicons li .image_holder {
+    overflow: hidden;
+    border-style: solid;
+    text-align: center;
+    vertical-align: middle;
+    /* Override Bootstrap V3 box sizing of .box-sizing(border-box); in scaffolding.less. */
+    -webkit-box-sizing: content-box;
+       -moz-box-sizing: content-box;
+            box-sizing: content-box;
+}
+
+.course-content ul.gridicons li img , .col-lg-8#gridactivetopicactivecoursetitle a img {
+    margin-top: 0;
+    width: 22px;
+    height: 22px;
+    padding: 3px;
+    background: #FFF;
+    text-decoration: none;
+}
+.course-content li.grid_section {
+    clear: both;
+}
+/* @end */
+
+/* @group Shadebox */
+
+div#gridshadebox_overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 500px;
+    background: black;
+    /* for IE */
+    filter: alpha(opacity=70);
+    /* CSS3 standard */
+    opacity: 0.7;
+    z-index: 1;
+    cursor: pointer;
+}
+#gridshadebox_content {
+    background: #fff;
+    min-height: 200px;
+}
+body.jsenabled #gridshadebox_content.hide_content {
+    display: none;
+}
+#gridshadebox_content .activity {
+    list-style: none;
+    border-bottom: 1px dashed #ccc;
+    padding-bottom: 4px;
+    padding-top: 2px;
+}
+#gridshadebox_content ul li.grid_section {
+    list-style: none;
+}
+#gridshadebox_content ul li ul li, #gridshadebox_content ul li ol li {
+    border-bottom: none;
+    padding-bottom: 4px;
+    padding-top: 2px;
+}
+
+#gridshadebox_content ul li ul li {
+    list-style: disc outside none;
+}
+#gridshadebox_content ul li ol li {
+    list-style: decimal outside none;
+} 
+ 
+#gridshadebox_close {
+    position: absolute;
+    top: -10px;
+    right: -10px;
+    cursor: pointer;
+}
+
+.gridshadebox_arrow {
+    position: absolute;
+    cursor: pointer;
+    opacity: 0;
+    transition: opacity .25s ease-in-out;
+    -moz-transition: opacity .25s ease-in-out;
+    -webkit-transition: opacity .25s ease-in-out;
+}
+.gridshadebox_arrow:hover {
+    opacity: 0.8;
+}
+#gridshadebox_left {
+    top: 92px;  /* Done here so that JS can change it. */
+    left: -24px;
+}
+#gridshadebox_right {
+    top: 92px;  /* Done here so that JS can change it. */
+    right: -24px;
+}
+
+#gridshadebox_content ul.gtopics {
+    margin: 0 15px 10px;
+}
+
+/* @end */
+
+/*Mod Rafael Milani Barbosa*/
+
+#gridactivetopic {
+    padding: 0px;
+}
+#gridactivetopiccontent {
+    padding: 0px;
+    height: 296px;
+    background-image: url(../../../../course/format/grid_across/pix/banners/banner.jpg);
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+#gridactivetopicactivecourse {
+    padding: 0px;
+    width: 100%;
+    height: 151px;
+    background: #637b9c;
+    color: #Fff;
+    padding-top: 1px;
+}
+#gridactivetopicactivecoursenumber {
+    
+}
+#gridactivetopicactivecoursenumber h1 {
+    font-size: 36px;
+    color: #FFF;
+}
+#gridactivetopicactivecoursetitle {
+    
+}
+#gridactivetopicactivecoursetitle h1 {
+    font-size: 36px;
+    color: #FFF;
+}
+#gridactivetopicactivecoursenavigation {
+    background: #596e8c;
+    height: 150px;
+}
+#course_welcome_nav_btn {
+    margin-top: 57px;
+    margin-bottom: 40px;
+    margin-left: 102px;
+}
+.btn-sm {
+    background: #393e44;
+    color: #fff;
+}
+.btn-sm:hover, .btn-sm:active, .btn-sm:focus, .btn-sm.active {
+    background: #393e44;
+    color: #fff;
+}
+#gridactivetopicbar {
+    padding: 0px;	height: 4px;
+}
+.gtopics-0 {
+    margin : 0px;
+    padding: 0px;
+}
+
+ul.gridicons li * {
+    color: #FFF;
+}
+ul.gridicons li {
+    background: #d8e8e1;
+    height: 197px;
+    border-right: 2px solid #fff;
+    border-bottom: 2px solid #fff;
+    color: #fff;
+    height: 197px;
+    color: #FFF;
+}
+ul.gridicons li:nth-child(1) {
+    background: #d8e8e1;
+}
+ul.gridicons li:nth-child(2) {
+    background: #f6e7b9;
+}
+ul.gridicons li:nth-child(3) {
+    background: #e7c3c7;
+}
+ul.gridicons li:nth-child(4) {
+    background: #c5cfe6;
+}
+ul.gridicons li:nth-child(5) {
+    background: #e4d8e8;
+}
+ul.gridicons li:nth-child(6) {
+    background: #e4d8e8;
+}
+ul.gridicons li:nth-child(7) {
+    background: #fff5b3;
+}
+ul.gridicons li:nth-child(8) {
+    background: #cbe0f9;
+}
+ul.gridicons li:nth-child(9) {
+    background: #d8e8e1;
+}
+ul.gridicons li:nth-child(10) {
+    background: #f6e7b9;
+}
+ul.gridicons li:nth-child(11) {
+    background: #e7c3c7;
+}
+ul.gridicons li:nth-child(12) {
+    background: #c5cfe6;
+}
+ul.gridicons li:nth-child(13) {
+    background: #e4d8e8;
+}
+ul.gridicons li:nth-child(14) {
+    background: #e4d8e8;
+}
+ul.gridicons li:nth-child(15) {
+    background: #fff5b3;
+}
+ul.gridicons li:nth-child(16) {
+    background: #cbe0f9;
+}
+ul.gridicons li:nth-child(17) {
+    background: #d8e8e1;
+}
+.topic-column2 {
+    margin-top: 45px;
+}
+
+.nactvs1 {
+    padidng: 10px;
+}
+.nactvs2 {
+    padding: 10px;
+    margin-left: 10px;
+}
+.change_image_cfg {
+    background: #FFF;
+}
+
+/*Conteudo dos módulos/tópicos single
+ *
+ *Rafael Milani Barbosa
+ *
+ */
+ #banner{
+    background-image:url(../../../../course/format/grid_across/pix//banners/banner.jpg);
+    background-repeat:no-repeat;
+    background-size:cover;
+    }
+#banner1 {
+    background-image: url(../../../../course/format/grid_across/pix/banners/banner.jpg);
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position-x: -3px;
+}
+#caixa {
+    text-align: center;
+    background: #617d9f;
+    padding-left: 0px;
+    opacity: 0.8;
+    margin-top: 137px;
+    padding-top: 1px;
+}
+
+#caixa p{
+    font-weight: 100;
+    font-size: 22px;
+    font-family:"lato";
+    color:#fff;
+
+}
+.licao {
+    list-style: none;
+    background: #eef2f7;
+    padding-bottom: 20px;
+    padding-top: 10px;
+    border-right: 3px solid #fff;
+    border-bottom: 3px solid #fff;
+}
+.col-lg-12 {
+    padding: 0px;
+}
+.activities_footer_course {
+    padding: 0px;
+}
+#modvis {
+width: 100px;
+line-height: 28px;
+border: 1px solid #fff;
+border-radius: 3px;
+color: #fff;
+font-size: 15px;
+font-weight: 700;
+margin-bottom: 20px;
+margin-left: auto;
+margin-right: auto;
+margin-top: 15px;
+}
+
+
+/*
+ *Rafael milani barbosa
+ *link a custom active module
+ *
+ *
+ */
+#link_custom_a {
+    height: 150px;
+    display: block;
+    padding: 0;
+    margin: 0;
+    padding: 0;
+}
